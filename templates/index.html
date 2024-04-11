@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Running Successfull</title>
+    <style>
+              @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+        *{
+          font-family:"Poppins", sans-serif ;
+        }
+          body{
+              top: 0;
+              margin: 0;
+              padding: 0;
+              box-sizing: border-box;
+          }
+          .main
+          {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 100%;
+              height: 18%;
+              flex-direction: column;
+          }
+          .voice{
+              font-size: 30px;
+          }
+      .container{
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 80%;
+          width: 100%;
+      }
+      .chat{
+          width: 60%;
+          height: auto;
+
+      }
+      .robot{
+          width: auto;
+          height: 100%;
+      }
+      .buttn{
+          color: white;
+          background-color:rgb(108, 108, 244);
+          border: none;
+          border-radius: 5px;
+          padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+ 
+    <div class="main">
+        <h1>Social Media - Mental Health Platform</h1>
+        <h1 class="voice">Voice Assistant</h1>
+        <button class="buttn" id="start">Ask me a Question</button>
+    </div>
+
+    <div class="container">
+        <div class="chat">
+
+            <div class="chats">
+
+                <div>Click on the above button to ask me anything</div>
+                <div>Your Response will be Generated...</div>
+                <hr>
+
+
+              </div>
+        </div>
+        <div class="robot">
+       <img src="https://t2.gstatic.com/licensed-image?q=tbn:ANd9GcT0sJRto97HZ7BtNJlqlUWW-p98e_pLlPrndtApHTJyu_E1M-bCnKwS97DZsMWpz0-D" alt="Chat_Robot" height="400px">
+        </div>
+
+    </div>
+
+
+
+    <!-- <script>
+      const inputBox = document.getElementById('input-box');
+      const voiceIcon = document.getElementById('voice-icon');
+
+      // Function to handle voice input
+      function startVoiceInput() {
+        // Code to start voice input
+        inputBox.placeholder = "Listening...";
+        // Simulating voice input
+        setTimeout(() => {
+          const voiceInputText = "This is a voice input";
+          inputBox.value = voiceInputText;
+          inputBox.placeholder = "Type or speak";
+        }, 2000); // Simulating voice recognition delay
+      }
+
+      // Event listener for clicking on the microphone icon
+      voiceIcon.addEventListener('click', startVoiceInput);
+    </script>
+ -->
+
+    
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+
+<script>
+  async function postData(url = "", data = {}) {
+ 
+    const response = await fetch(url, {
+      method: "POST", 
+      mode: "cors", 
+      cache: "no-cache", 
+      credentials: "same-origin", 
+      headers: {
+        "Content-Type": "application/json",
+
+      },
+      redirect: "follow", 
+      referrerPolicy: "no-referrer", 
+      body: JSON.stringify(data), 
+    });
+    return response.json(); 
+  }
+  const populateusingGPT = (input)=>{
+    postData("/api", { input: input }).then((data) => {
+    document.querySelector(".chats").innerHTML = 
+      document.querySelector(".chats").innerHTML + ` <div>Question : ${input}
+      </div>
+      <div>Answer : ${data.message}</div>
+      <hr>` 
+      });
+  }
+  let speech = true;
+  let globalTranscript;
+  window.SpeechRecognition = window.SpeechRecognition
+    || window.webkitSpeechRecognition;
+
+  const recognition = new SpeechRecognition();
+  recognition.interimResults = true;
+
+  
+  recognition.addEventListener('result', e => {
+    const transcript = Array.from(e.results)
+      .map(result => result[0])
+      .map(result => result.transcript)
+      .join('')
+
+    globalTranscript = transcript 
+  });
+
+  start.addEventListener("click", ()=>
+    {
+      if(speech==true)
+      {
+      recognition.start();
+      recognition.addEventListener('end', ()=>
+      {
+        console.log(globalTranscript);   
+        
+        if(globalTranscript!=="")
+        {
+        populateusingGPT(globalTranscript)
+        }
+        globalTranscript=""
+                                   
+      });
+      
+      }
+      
+    })
+
+
+</script>
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
